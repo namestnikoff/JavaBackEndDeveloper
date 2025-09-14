@@ -2,9 +2,10 @@ public class VectorOutput {
     
     public void printVector(String name, Vector vector) {
         System.out.println(name + " = " + vector);
-        System.out.println("Координаты: x = " + vector.getX() + 
+        /*System.out.println("Координаты: x = " + vector.getX() + 
                          ", y = " + vector.getY() + 
                          ", z = " + vector.getZ());
+        */
     }
 
     public void printVectors(String title, Vector[] vectors) {
