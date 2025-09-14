@@ -8,6 +8,10 @@ public class VectorApp {
         // Ввод одного вектора
         Vector vector1 = input.inputVector("A");
         output.printVector("Вектор A", vector1);
+
+        // Тестируем длину вектора
+        System.out.println("Длина вектора A: " + String.format("%.2f", vector1.length()));
+        System.out.println();
         
         System.out.println();
         
@@ -15,6 +19,8 @@ public class VectorApp {
         Vector vector2 = input.inputVector("B");
         output.printVector("Вектор B", vector2);
         
+        // Тестируем длину вектора
+        System.out.println("Длина вектора B: " + String.format("%.2f", vector2.length()));
         System.out.println();
         
         // Создание массива векторов
