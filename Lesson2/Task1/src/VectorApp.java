@@ -54,6 +54,12 @@ public class VectorApp {
         // Создание массива векторов
         Vector[] vectors = {vector1, vector2, crossProduct, sum, difference};
         output.printVectors("Все векторы", vectors);
+
+        // Теперь запрашиваем N и выводим массив векторов
+        System.out.println("\n=== ГЕНЕРАЦИЯ МАССИВА ВЕКТОРОВ ===");
+        int n = input.inputN();
+        Vector[] randomVectors = Vector.generateRandomVectors(n);
+        output.printVectors("Массив из " + n + " случайных векторов", randomVectors);
         
         input.close();
     }

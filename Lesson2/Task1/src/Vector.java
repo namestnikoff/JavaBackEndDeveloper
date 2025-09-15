@@ -1,10 +1,14 @@
 //Класс immutable - наследование запрещено
+
+import java.util.Random;
+
 public final class Vector {
     //Наследование атрибутов тоже запрещено и нет сеттеров для изменения атрибутов
     private final double x;
     private final double y;
     private final double z;
-    
+    // Добавляем генератор случайных чисел как статическое поле
+    private static final Random random = new Random();
 
     public Vector(double x, double y, double z) {
         this.x = x;
@@ -56,6 +60,24 @@ public final class Vector {
     // 7. Разность векторов
     public Vector subtract(Vector other) {
         return new Vector(this.x - other.x, this.y - other.y, this.z - other.z);
+    }
+
+    // 8.Статический метод для создания массива случайных векторов
+    public static Vector[] generateRandomVectors(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("Number of vectors must be positive");
+        }
+        
+        Vector[] vectors = new Vector[n];
+        for (int i = 0; i < n; i++) {
+            // Генерируем случайные координаты в диапазоне [-10.0, 10.0)
+            double x = random.nextDouble() * 20 - 10;
+            double y = random.nextDouble() * 20 - 10;
+            double z = random.nextDouble() * 20 - 10;
+            
+            vectors[i] = new Vector(x, y, z);
+        }
+        return vectors;
     }
 
     // Геттеры

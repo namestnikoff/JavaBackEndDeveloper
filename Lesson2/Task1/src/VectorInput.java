@@ -30,6 +30,25 @@ public class VectorInput {
         }
     }
 
+    // Метод для ввода количества векторов N
+    public int inputN() {
+        System.out.print("Введите количество векторов N: ");
+        while (true) {
+            if (scanner.hasNextInt()) {
+                int n = scanner.nextInt();
+                if (n > 0) {
+                    return n;
+                } else {
+                    System.out.println("Ошибка: N должно быть положительным числом");
+                }
+            } else {
+                String invalidInput = scanner.next();
+                System.out.println("Ошибка: '" + invalidInput + "' не является целым числом");
+            }
+            System.out.print("Введите количество векторов N: ");
+        }
+    }
+
     public void close() {
         scanner.close();
     }
