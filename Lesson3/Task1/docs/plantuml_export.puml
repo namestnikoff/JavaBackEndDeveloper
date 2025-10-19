@@ -1,0 +1,160 @@
+@startuml
+!theme plain
+
+' Enums (только используемые)
+enum FuelType {
+    GASOLINE
+    DIESEL  
+    ELECTRIC
+    NONE
+}
+
+enum EngineType {
+    INTERNAL_COMBUSTION
+    ELECTRIC
+    NONE
+}
+
+enum TransportType {
+    CAR
+    MOTORCYCLE
+    BOAT
+    HORSE
+}
+
+' Interfaces
+interface EnginePowered {
+    + getEngine(): Engine
+    + startEngine(): void
+    + stopEngine(): void
+    + isEngineRunning(): boolean
+}
+
+interface FuelConsumable {
+    + getFuelConsumption(): double
+    + refuel(amount: double): void
+    + getFuelLevel(): double
+}
+
+interface Movable {
+    + move(): void
+    + stopMoving(): void
+    + getCurrentSpeed(): double
+}
+
+' Classes
+class Engine {
+    - type: EngineType
+    - power: int
+    - fuelType: FuelType
+    + toString(): String
+}
+
+abstract class Transport {
+    - model: String
+    - year: int
+    - capacity: int
+    - transportType: TransportType
+    + start(): void
+    + stop(): void
+    + getInfo(): String
+    + displayInfo(): void
+    + getModel(): String
+    + getYear(): int
+    + getCapacity(): int
+    + getTransportType(): TransportType
+}
+
+class Car extends Transport implements EnginePowered, FuelConsumable, Movable {
+    - engine: Engine
+    - fuelLevel: double
+    - isEngineRunning: boolean
+    - currentSpeed: double
+    + honk(): void
+}
+
+class Motorcycle extends Transport implements EnginePowered, FuelConsumable, Movable {
+    - engine: Engine
+    - fuelLevel: double
+    - isEngineRunning: boolean
+    - currentSpeed: double
+    - hasSidecar: boolean
+    + performTrick(): void
+}
+
+class Boat extends Transport implements EnginePowered, FuelConsumable, Movable {
+    - engine: Engine
+    - fuelLevel: double
+    - isEngineRunning: boolean
+    - currentSpeed: double
+    - displacement: double
+    + dropAnchor(): void
+}
+
+class Horse extends Transport implements Movable {
+    - breed: String
+    - age: int
+    - currentSpeed: double
+    + neigh(): void
+    + feed(): void
+}
+
+class InputHandler {
+    + getInt(scanner: Scanner, prompt: String, min: int, max: int): int
+    + getPositiveInt(scanner: Scanner, prompt: String): int
+    + getString(scanner: Scanner, prompt: String): String
+    + getDouble(scanner: Scanner, prompt: String, min: double, max: double): double
+    + getBoolean(scanner: Scanner, prompt: String): boolean
+    + getEnumChoice(scanner: Scanner, prompt: String, enumClass: Class<T>): T
+}
+
+class TransportManager {
+    - transports: Transport[]
+    + main(args: String[]): void
+    - showAllTransports(transports: Transport[]): void
+    - manageTransport(scanner: Scanner, transports: Transport[]): void
+    - performSpecialAction(transport: Transport): void
+}
+
+' Relationships
+TransportManager --> Transport
+TransportManager --> InputHandler
+
+Car --> Engine
+Motorcycle --> Engine
+Boat --> Engine
+
+Car ..|> EnginePowered
+Car ..|> FuelConsumable
+Car ..|> Movable
+
+Motorcycle ..|> EnginePowered
+Motorcycle ..|> FuelConsumable
+Motorcycle ..|> Movable
+
+Boat ..|> EnginePowered
+Boat ..|> FuelConsumable
+Boat ..|> Movable
+
+Horse ..|> Movable
+
+Engine --> EngineType
+Engine --> FuelType
+
+Transport --> TransportType
+
+note right of EnginePowered
+  Используется: Car, Motorcycle, Boat
+  Не используется: Horse
+end note
+
+note right of FuelConsumable  
+  Используется: Car, Motorcycle, Boat
+  Не используется: Horse
+end note
+
+note right of Movable
+  Используется: все транспортные средства
+end note
+
+@enduml
