@@ -1,9 +1,26 @@
+# Spring Boot 3.1+ автоматически читает этот файл
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:16'
+    container_name: task_tracker_db  
+    restart: unless-stopped # Перезапуск при сбое   
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=tasktracker'
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'PGDATA=/var/lib/postgresql/data/pgdata'
     ports:
-      - '5432'
+      - '5432:5432' # Явно пробрасываем порт 5432 на хост формат: 'HOST_PORT:CONTAINER_PORT'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Volume для постоянного хранения данных
+    
+    # Healthcheck — Spring Boot будет ждать, пока БД не станет ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+volumes:
+  postgres_data:
+    driver: local
