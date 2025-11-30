@@ -34,3 +34,116 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task exportProject {
+    group = 'documentation'
+    description = 'Экспортирует структуру проекта и код в текстовый файл'
+
+    doLast {
+        def projectRoot = project.projectDir
+        def timestamp = new Date().format('yyyyMMdd_HHmmss')
+        def outputFile = new File(projectRoot, "project_export_${timestamp}.txt")
+
+        def includeExtensions = ['.java', '.gradle', '.properties', '.yml', '.yaml',
+                                 '.xml', '.md', '.txt', '.sql', '.json']
+
+        def excludeDirs = ['.gradle', 'build', 'bin', 'out', '.git',
+                          '.idea', 'target', 'node_modules', '.vscode']
+
+        outputFile.withWriter('UTF-8') { writer ->
+            writer.println('=' * 80)
+            writer.println('ЭКСПОРТ ПРОЕКТА')
+            writer.println("Дата: ${new Date().format('yyyy-MM-dd HH:mm:ss')}")
+            writer.println("Путь: ${projectRoot}")
+            writer.println('=' * 80)
+            writer.println()
+
+            writer.println('=' * 80)
+            writer.println('СТРУКТУРА ПРОЕКТА')
+            writer.println('=' * 80)
+
+            def printTree
+            printTree = { File dir, String prefix, Writer w ->
+                def files = dir.listFiles()?.toList()?.sort { a, b ->
+                    if (a.isDirectory() != b.isDirectory()) {
+                        return a.isDirectory() ? -1 : 1
+                    }
+                    return a.name.compareToIgnoreCase(b.name)
+                }
+
+                files?.eachWithIndex { file, index ->
+                    if (excludeDirs.contains(file.name)) return
+
+                    def isLast = index == files.size() - 1
+                    def connector = isLast ? '└── ' : '├── '
+                    w.println("${prefix}${connector}${file.name}")
+
+                    if (file.isDirectory()) {
+                        def extension = isLast ? '    ' : '│   '
+                        printTree(file, prefix + extension, w)
+                    }
+                }
+            }
+
+            writer.println("${projectRoot.name}/")
+            printTree(projectRoot, '', writer)
+            writer.println()
+            writer.println()
+
+            writer.println('=' * 80)
+            writer.println('СОДЕРЖИМОЕ ФАЙЛОВ')
+            writer.println('=' * 80)
+            writer.println()
+
+            def fileCount = 0
+
+            projectRoot.eachFileRecurse { file ->
+                if (file.isDirectory()) return
+
+                def relativePath = projectRoot.toPath().relativize(file.toPath()).toString()
+                def pathParts = relativePath.split(/[\\\/]/)
+
+                if (pathParts.any { excludeDirs.contains(it) }) return
+
+                def extension = file.name.lastIndexOf('.') >= 0 ?
+                               file.name.substring(file.name.lastIndexOf('.')) : ''
+
+                if (!includeExtensions.contains(extension) &&
+                    !['docker-compose.yml', 'Dockerfile'].contains(file.name)) {
+                    return
+                }
+
+                try {
+                    writer.println()
+                    writer.println('-' * 80)
+                    writer.println("Файл: ${relativePath}")
+                    writer.println('-' * 80)
+                    writer.println(file.text)
+                    if (!file.text.endsWith('\n')) {
+                        writer.println()
+                    }
+
+                    fileCount++
+                    println("✓ Обработан: ${relativePath}")
+
+                } catch (Exception e) {
+                    println("✗ Ошибка при обработке ${relativePath}: ${e.message}")
+                    writer.println("[Ошибка чтения файла: ${e.message}]")
+                }
+            }
+
+            writer.println()
+            writer.println('=' * 80)
+            writer.println('СТАТИСТИКА')
+            writer.println('=' * 80)
+            writer.println("Всего обработано файлов: ${fileCount}")
+            writer.println("Дата экспорта: ${new Date().format('yyyy-MM-dd HH:mm:ss')}")
+        }
+
+        println()
+        println("✅ Экспорт завершен!")
+        println("📄 Результат сохранен в: ${outputFile.name}")
+        println()
+        println("💡 Теперь можно отправить файл ${outputFile.name} в чат")
+    }
+}
