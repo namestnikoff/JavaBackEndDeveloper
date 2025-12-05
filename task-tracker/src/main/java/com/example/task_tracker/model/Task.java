@@ -2,6 +2,7 @@ package com.example.task_tracker.model;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tasks")
@@ -11,20 +12,21 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Краткое название задачи
+    // Р С™РЎР‚Р В°РЎвЂљР С”Р С•Р Вµ Р Р…Р В°Р В·Р Р†Р В°Р Р…Р С‘Р Вµ Р В·Р В°Р Т‘Р В°РЎвЂЎР С‘
     @Column(nullable = false, length = 200)
     private String title;
 
-    // Подробное описание
+    // Р СџР С•Р Т‘РЎР‚Р С•Р В±Р Р…Р С•Р Вµ Р С•Р С—Р С‘РЎРѓР В°Р Р…Р С‘Р Вµ
     @Column(length = 2000)
     private String description;
 
-    // Статус задачи
+    // Р РЋРЎвЂљР В°РЎвЂљРЎС“РЎРѓ Р В·Р В°Р Т‘Р В°РЎвЂЎР С‘
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private TaskStatus status = TaskStatus.PLANNED;
 
-    // Владелец задачи (пользователь)
+    // Р вЂ™Р В»Р В°Р Т‘Р ВµР В»Р ВµРЎвЂ  Р В·Р В°Р Т‘Р В°РЎвЂЎР С‘ (Р С—Р С•Р В»РЎРЉР В·Р С•Р Р†Р В°РЎвЂљР ВµР В»РЎРЉ)
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "user_id",
@@ -32,7 +34,7 @@ public class Task {
     )
     private User user;
 
-    // Группа задач (может быть null, если задача без группы)
+    // Р вЂњРЎР‚РЎС“Р С—Р С—Р В° Р В·Р В°Р Т‘Р В°РЎвЂЎ (Р СР С•Р В¶Р ВµРЎвЂљ Р В±РЎвЂ№РЎвЂљРЎРЉ null, Р ВµРЎРѓР В»Р С‘ Р В·Р В°Р Т‘Р В°РЎвЂЎР В° Р В±Р ВµР В· Р С–РЎР‚РЎС“Р С—Р С—РЎвЂ№)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "group_id",
@@ -40,15 +42,15 @@ public class Task {
     )
     private TaskGroup group;
 
-    // Когда создана
+    // Р С™Р С•Р С–Р Т‘Р В° РЎРѓР С•Р В·Р Т‘Р В°Р Р…Р В°
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    // Когда последний раз обновлена
+    // Р С™Р С•Р С–Р Т‘Р В° Р С—Р С•РЎРѓР В»Р ВµР Т‘Р Р…Р С‘Р в„– РЎР‚Р В°Р В· Р С•Р В±Р Р…Р С•Р Р†Р В»Р ВµР Р…Р В°
     @Column(nullable = false)
     private Instant updatedAt = Instant.now();
 
-    // Для оптимистической блокировки (на будущее, пригодится для REST)
+    // Р вЂќР В»РЎРЏ Р С•Р С—РЎвЂљР С‘Р СР С‘РЎРѓРЎвЂљР С‘РЎвЂЎР ВµРЎРѓР С”Р С•Р в„– Р В±Р В»Р С•Р С”Р С‘РЎР‚Р С•Р Р†Р С”Р С‘ (Р Р…Р В° Р В±РЎС“Р Т‘РЎС“РЎвЂ°Р ВµР Вµ, Р С—РЎР‚Р С‘Р С–Р С•Р Т‘Р С‘РЎвЂљРЎРѓРЎРЏ Р Т‘Р В»РЎРЏ REST)
     @Version
     private Long version;
 
@@ -60,7 +62,7 @@ public class Task {
         this.updatedAt = Instant.now();
     }
 
-    // геттеры/сеттеры
+    // Р С–Р ВµРЎвЂљРЎвЂљР ВµРЎР‚РЎвЂ№/РЎРѓР ВµРЎвЂљРЎвЂљР ВµРЎР‚РЎвЂ№
 
     public Long getId() {
         return id;
@@ -134,3 +136,4 @@ public class Task {
         this.version = version;
     }
 }
+

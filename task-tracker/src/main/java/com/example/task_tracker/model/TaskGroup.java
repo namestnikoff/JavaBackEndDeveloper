@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(
@@ -18,7 +19,7 @@ public class TaskGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Название группы (например, "Учёба", "Работа", "Личное")
+    // Р СњР В°Р В·Р Р†Р В°Р Р…Р С‘Р Вµ Р С–РЎР‚РЎС“Р С—Р С—РЎвЂ№ (Р Р…Р В°Р С—РЎР‚Р С‘Р СР ВµРЎР‚, "Р Р€РЎвЂЎРЎвЂР В±Р В°", "Р В Р В°Р В±Р С•РЎвЂљР В°", "Р вЂєР С‘РЎвЂЎР Р…Р С•Р Вµ")
     @Column(nullable = false, length = 100)
     private String name;
 
@@ -28,18 +29,19 @@ public class TaskGroup {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    // Обратная связь: одна группа -> много задач
+    // Р С›Р В±РЎР‚Р В°РЎвЂљР Р…Р В°РЎРЏ РЎРѓР Р†РЎРЏР В·РЎРЉ: Р С•Р Т‘Р Р…Р В° Р С–РЎР‚РЎС“Р С—Р С—Р В° -> Р СР Р…Р С•Р С–Р С• Р В·Р В°Р Т‘Р В°РЎвЂЎ
     @OneToMany(
         mappedBy = "group",
         cascade = CascadeType.ALL,
         orphanRemoval = false
     )
+    @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
 
     public TaskGroup() {
     }
 
-    // геттеры/сеттеры
+    // Р С–Р ВµРЎвЂљРЎвЂљР ВµРЎР‚РЎвЂ№/РЎРѓР ВµРЎвЂљРЎвЂљР ВµРЎР‚РЎвЂ№
 
     public Long getId() {
         return id;
@@ -81,3 +83,4 @@ public class TaskGroup {
         this.tasks = tasks;
     }
 }
+

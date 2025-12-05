@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(
@@ -18,11 +19,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Почта используется как логин
+    // Р СџР С•РЎвЂЎРЎвЂљР В° Р С‘РЎРѓР С—Р С•Р В»РЎРЉР В·РЎС“Р ВµРЎвЂљРЎРѓРЎРЏ Р С”Р В°Р С” Р В»Р С•Р С–Р С‘Р Р…
     @Column(nullable = false, length = 255)
     private String email;
 
-    // Храним только хеш пароля, а не сам пароль
+    // Р ТђРЎР‚Р В°Р Р…Р С‘Р С РЎвЂљР С•Р В»РЎРЉР С”Р С• РЎвЂ¦Р ВµРЎв‚¬ Р С—Р В°РЎР‚Р С•Р В»РЎРЏ, Р В° Р Р…Р Вµ РЎРѓР В°Р С Р С—Р В°РЎР‚Р С•Р В»РЎРЉ
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
@@ -33,18 +34,19 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    // Не обязательно, но удобно иметь связь "пользователь -> его задачи"
+    // Р СњР Вµ Р С•Р В±РЎРЏР В·Р В°РЎвЂљР ВµР В»РЎРЉР Р…Р С•, Р Р…Р С• РЎС“Р Т‘Р С•Р В±Р Р…Р С• Р С‘Р СР ВµРЎвЂљРЎРЉ РЎРѓР Р†РЎРЏР В·РЎРЉ "Р С—Р С•Р В»РЎРЉР В·Р С•Р Р†Р В°РЎвЂљР ВµР В»РЎРЉ -> Р ВµР С–Р С• Р В·Р В°Р Т‘Р В°РЎвЂЎР С‘"
     @OneToMany(
         mappedBy = "user",
         cascade = CascadeType.ALL,
         orphanRemoval = false
     )
+    @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
 
     public User() {
     }
 
-    // геттеры/сеттеры ниже (можно сгенерировать в IDE)
+    // Р С–Р ВµРЎвЂљРЎвЂљР ВµРЎР‚РЎвЂ№/РЎРѓР ВµРЎвЂљРЎвЂљР ВµРЎР‚РЎвЂ№ Р Р…Р С‘Р В¶Р Вµ (Р СР С•Р В¶Р Р…Р С• РЎРѓР С–Р ВµР Р…Р ВµРЎР‚Р С‘РЎР‚Р С•Р Р†Р В°РЎвЂљРЎРЉ Р Р† IDE)
 
     public Long getId() {
         return id;
@@ -94,3 +96,4 @@ public class User {
         this.tasks = tasks;
     }
 }
+
